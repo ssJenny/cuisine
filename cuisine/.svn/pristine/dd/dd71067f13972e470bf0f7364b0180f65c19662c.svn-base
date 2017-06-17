@@ -1,0 +1,24 @@
+
+
+//加载开始页
+function StartPage(){
+	var me = this;
+	this.onstart;
+	this.init = function(){
+		this.ele = $('#p1');
+		this.btn = $('#startBtn');
+		
+		this.btn.click (function(){
+			console.log(1);
+			me.onstart && me.onstart();
+		});
+	}
+	
+	this.show = function(){
+		this.ele.show();
+	}
+	this.hide = function(){
+		this.ele.hide();
+	}
+	this.init();
+}

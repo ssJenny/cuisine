@@ -1,0 +1,50 @@
+
+//预加载页面
+function LoadingPage(){
+	var me = this;
+	var pre = "../img/";
+	var address = ["bg_game.png","bg_start.png","boom.png","bullet.png","enemy1_1.gif",
+					"enemy1_2.gif","enemy1.png","enemy2_1.png","enemy2_2.gif","enemy2.png",
+					"enemy3_1.png","enemy3_2.gif","enemy3.png","plane_1.gif","plane.gif"];
+	
+	this.init = function(){
+		this.ele = $('#p0');
+		this.eleText = $('#loading');
+	}
+	
+	this.load = function (){
+		//创建预加载对象
+		var preload = new Preload();
+		
+		//将图片地址添加到预加载对象中
+		for(var i = 0; i < address.length; i++){
+			preload.add(pre + address[i]);
+		}
+		
+		//关注加载事件
+		preload.onprogress = function(num,total){
+			me.eleText.html(Math.round(100 * num / total) + "%");
+			console.log(num,total);
+		}
+		
+		//关注加载完毕事件
+		preload.onload = function(){
+			console.log("over");
+			
+			me.onover && me.onover();
+		}
+		
+		//加载图片
+		preload.load();
+	}
+	
+	this.show = function(){
+		this.ele.show();
+	}
+	
+	this.hide = function(){
+		this.ele.hide();
+	}
+	
+	this.init();
+}

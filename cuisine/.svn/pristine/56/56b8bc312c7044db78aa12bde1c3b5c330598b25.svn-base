@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="jquery-1.8.3.min.js"></script>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing: border-box;
+        }
+        ul{
+            list-style: none;
+        }
+        body,#wrap{
+            overflow: hidden;
+            position: relative;
+        }
+        #content{
+            position: absolute;
+            transition:1s;
+        }
+        #header{
+            height:100px;
+            background: #221236;
+        }
+        #header #nav{
+            width: 800px;
+            margin: 0 auto;
+        }
+        #header #nav li{
+            float: left;
+            width: 100px;
+            height: 50px;
+            color: #fff;
+            font:30px/50px "microsoftyahei";
+            margin: 25px 50px;
+        }
+        #header #nav li:hover{
+            color: red;
+            cursor: pointer;
+        }
+        #masked{
+            background: #299ad6;
+            position:absolute;
+            top:0; left: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <ul id="nav">
+            <li>第一屏</li>
+            <li>第二屏</li>
+            <li>第三屏</li>
+            <li>第四屏</li>
+        </ul>
+    </div>
+    <div id="wrap">
+        <ul id="content">
+            <li style="background: red"></li>
+            <li style="background: yellow"></li>
+            <li style="background: blue"></li>
+            <li style="background: green"></li>
+        </ul>
+    </div>
+    <div id="masked"></div>
+</body>
+</html>
+<script>
+    var oWrap = document.querySelector("#wrap");
+    var oContent = document.querySelector("#content");
+    var aLis = document.querySelectorAll("#content>li");
+    var ifMove = true;     //解决鼠标连续触发问题
+    setSize();
+    window.onresize = setSize;
+    function setSize(){
+        var screenHeight = document.documentElement.clientHeight - 100;
+        console.log(screenHeight)
+        var screenWidth = document.documentElement.clientWidth;
+        
+        //设置蒙版尺寸
+            $("#masked").height(screenHeight+100);
+            $("#masked").width(screenWidth);
+        
+        oWrap.style.height =  screenHeight + 'px';
+        oWrap.style.width = oContent.style.width = screenWidth + 'px';
+        oContent.style.height =  screenHeight*4 + 'px';
+        for(var i = 0 ; i<aLis.length;i++){
+            aLis[i].style.height =  screenHeight + 'px';
+        }
+    }
+
+    document.onmousewheel = fn;
+    document.addEventListener('DOMMouseScroll', fn);
+
+    oContent.style.top = 0;
+
+    function fn(e) {
+        e = e || event;
+        var distance = parseInt(oWrap.style.height);
+        //var step = distance / 10;
+        if (e.wheelDelta > 0 || e.detail < 0) {
+            if (ifMove) {
+                ifMove = false;
+                //console.log("向上滚");
+                var topValue = parseInt(oContent.style.top);
+                if (topValue < 0) {
+                    oContent.style.top = topValue + distance + 'px';
+                }
+                
+                setTimeout(function () {
+                    console.log("滚那么快干嘛，等着！")
+                    ifMove = true;
+                }, 1000);
+            }
+        } else {
+            if (ifMove) {
+                ifMove = false;
+                //console.log("向下滚");
+                var topValue = parseInt(oContent.style.top);
+                if (topValue > -distance * 3) {
+                    oContent.style.top = parseInt(oContent.style.top) - distance + 'px';
+                }
+                
+                setTimeout(function () {
+                    console.log("滚那么快干嘛，等着！")
+                    ifMove = true;
+                }, 1000);
+            }
+        }
+    }
+
+    //蒙版层动画
+    setTimeout(function(){
+        $("#masked").slideUp(1000).hide(500);
+    },1000)
+
+    //屏幕滚动指定地点
+    var anchors = $("#header #nav li");
+    $(aLis).each(function(index,ele){
+        $(ele).attr("id","a"+index);
+    });
+    anchors.click(function(){
+        var distance = $("#a"+$(this).index()).get(0).offsetTop;
+        oContent.style.top = -distance+'px';
+    });
+
+
+    //蒙版点击事件
+    $("#masked").on("dblclick",function(){
+        $(this).slideUp(500)
+    })
+
+
+    //获取参数工具函数
+    function getUrlParams(name){
+     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+     var r = window.location.search.substr(1).match(reg);
+     if(r!=null)
+         return  r[2];
+     else 
+         return "";
+    }
+
+    //首页点击判断
+    if(index = getUrlParams('thisid')){
+        index!=0 && ($("#masked").slideUp(0));
+        anchors.eq(index).trigger("click");
+    }
+</script>

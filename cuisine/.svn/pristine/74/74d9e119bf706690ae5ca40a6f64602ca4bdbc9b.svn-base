@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="js/jquery-1.8.3.min.js"></script>
+    <script src="js/move.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/animate.css">
+    <style>
+        *{
+            margin:0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        ul{
+            list-style: none;
+        }
+        a{
+            text-decoration: none;
+            display: block;
+            width: 40px;
+            height: 100px;
+            background: gray;
+            opacity: 0.6;
+            position: absolute;
+            top:70%;
+            text-align: center;
+            font: 30px/100px "microsoft yahei";
+            cursor:pointer;
+        }
+        a:hover{
+            color:red;
+            background: #000000;
+            opacity: 0.9;
+        }
+        .wrap{
+            width: 800px;
+            height: 500px;
+            border:1px solid red;
+            overflow: hidden;
+            position: relative;
+            margin:100px auto;
+        }
+        .wrap>li{
+            width: 800px;
+            height: 500px;
+            float: left;
+            position: relative;
+        }
+        .wrap>li:not(:first-child){
+            display: none;
+        }
+        .circle{
+            width: 50px;
+            height: 180px;
+            position: absolute;
+            top:50%;
+            margin-top: -90px;
+        }
+        .circle>i{
+            display: block;
+            width: 50px;
+            height:50px;
+            border-radius: 50%;
+            background: #000;
+            margin-right: 10px;
+            cursor: pointer;
+            margin-bottom: 5px;
+        }
+        li>b{
+            position: absolute;
+            display: block;
+            width: 100px;
+            height:100px;
+            background: pink;
+            left:50%;top:50%;
+            margin-left:-50px;
+            margin-top:-50px;
+            font: 100px/100px "microsoft yahei";
+            text-align: center;
+        }
+        .circle .active{
+            background:pink;
+        }
+        .wrap .left{
+            left:100px;
+        }
+        .wrap .right{
+            right: 100px;
+        }
+    </style>
+</head>
+<body>
+    <ul class="wrap">
+        <li style="background:red"></li>
+        <li style="background:green"></li>
+        <li style="background:yellow"></li>
+        <div class="circle">
+            <i class="active"></i>
+            <i></i>
+            <i></i>
+        </div>
+        <a class="left">&lt;</a>
+        <a class="right">&gt;</a>
+    </ul>
+</body>
+</html>
+<script>
+    function Movement(that){
+        var oldIndex = $(".wrap>li:visible").index();
+        var newIndex = $(that).index();
+        console.log(oldIndex,newIndex);
+        $(".circle>i").eq(newIndex).addClass("active").siblings("i").removeClass("active");
+        if(newIndex>oldIndex){
+            $(".wrap>li").eq(newIndex).attr("class","animated fadeInLeft").fadeIn(400).siblings("li").fadeOut(100);
+        }else{
+            $(".wrap>li").eq(newIndex).attr("class","animated fadeInRight").fadeIn(400).siblings("li").fadeOut(100);
+        }
+    }
+    $(".circle>i").click(function(){
+        Movement($(this));
+    })
+    $(".left").click(function(){
+        Movement($(".wrap>li:visible").prev())
+    })
+    $(".right").click(function(){
+        var that = $(".wrap>li:visible").next();
+        that.index()<=2?Movement(that):Movement($(".wrap>li:first"));
+    })
+</script>

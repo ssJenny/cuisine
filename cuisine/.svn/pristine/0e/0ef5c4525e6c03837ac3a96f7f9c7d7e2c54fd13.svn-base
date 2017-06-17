@@ -1,0 +1,15 @@
+
+function GamePage(){
+	this.init = function(){
+		this.ele = $("#p2")
+	}
+	
+	this.show = function(){
+		this.ele.show();
+	}
+	this.hide = function(){
+		this.ele.hide();
+	}
+	
+	this.init();
+}
